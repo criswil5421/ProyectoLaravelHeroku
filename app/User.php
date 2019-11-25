@@ -2,51 +2,14 @@
 
 namespace App;
 
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
-    public function roles(){
-        return $this->belongsToMany('App\role');
-    }
 
-    
-     public function authorizeRoles($roles){
-         if($this->hasAnyRole($roles)){
-        return true;
-         }
-         abort(401, 'this action is ainauthorized');
-     }
-
-
-
-
-    public function hasAnyRole($roles){
-
-        if(is_array($roles)){
-         foreach($roles as $role){
-            if($this->hasRole($role)){
-                return true;
-            }
-         }
-        }else{
-            if($this->hasRole($roles)){
-                return true;
-            }
-        }
-
-        return false;
-    }
-     public function hasRole($role){
-         if($this->roles()->where('name', $role)->first()){
-            return true;
-         }
-         return false;
-         
-     }
     /**
      * The attributes that are mass assignable.
      *
@@ -65,12 +28,30 @@ class User extends Authenticatable implements MustVerifyEmail
         'password', 'remember_token',
     ];
 
+    // Rest omitted for brevity
+
     /**
-     * The attributes that should be cast to native types.
+     * Get the identifier that will be stored in the subject claim of the JWT.
      *
-     * @var array
+     * @return mixed
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = bcrypt($value);
+    }
 }
