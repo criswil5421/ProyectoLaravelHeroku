@@ -15,6 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
 Auth::routes(['verify' => true]);
 
 Auth::routes();
@@ -70,3 +71,6 @@ Route::get('rango/show/{rango_id}',"RangoController@show");
 
 Route::get('respuesta/index',"RespuestaController@index");
 Route::get('respuesta/show/{respuesta_id}',"RespuestaController@show");
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

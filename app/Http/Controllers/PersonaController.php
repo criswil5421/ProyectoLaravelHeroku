@@ -22,7 +22,6 @@ class PersonaController extends Controller
         return response()->json(['success' => true]);
     }
 
-
     public function show($persona_id)
     {
        
@@ -30,6 +29,8 @@ class PersonaController extends Controller
         
         return response()->json($Persona);
     }
+
+    
 
 
     public function update(Request $request, $persona_id)
